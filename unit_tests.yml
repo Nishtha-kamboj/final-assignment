@@ -1,0 +1,32 @@
+name: Unit Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '11'
+
+    - name: Build with Maven
+      run: mvn clean test
+
+    - name: Run Unit Tests and Store Report
+      run: |
+        mkdir -p target/surefire-reports
+        cp target/surefire-reports/*.xml test-reports/
+
+    - name: Upload Test Reports
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-reports
+        path: test-reports
+
